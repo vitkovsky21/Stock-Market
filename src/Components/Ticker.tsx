@@ -11,7 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useGetStockQuery } from "../Services/stockApi";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -25,12 +26,12 @@ const useStyles = makeStyles(() => ({
     padding: "16px",
   },
   btn: {
-    margin: '18px 0',
+    margin: "18px 0",
   },
   actions: {
     display: "flex",
     justifyContent: "space-around",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   value: {
     boxShadow: "0px 0px 6px rgb(0 0 0 / 14%)",
@@ -39,13 +40,19 @@ const useStyles = makeStyles(() => ({
     margin: "5px !important",
     width: "115px",
     position: "relative",
-  }
+  },
 }));
 
 const Ticker = () => {
   const classes = useStyles();
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
+
+  const { data: stockData } = useGetStockQuery();
+
+  useEffect(() => {
+    console.log(stockData);
+  }, [])
 
   const handleChange = (event: SelectChangeEvent) => {
     setCurrency(event.target.value as string);
@@ -77,7 +84,6 @@ const Ticker = () => {
             </Select>
           </FormControl>
           <TextField
-            name="login"
             variant="outlined"
             label="Enter Value"
             margin="normal"
@@ -90,9 +96,7 @@ const Ticker = () => {
           />
           <div className={classes.actions}>
             <div>
-              <Typography className={classes.value}>
-                62
-              </Typography>
+              <Typography className={classes.value}>62</Typography>
               <Button
                 type="submit"
                 fullWidth
@@ -104,9 +108,7 @@ const Ticker = () => {
               </Button>
             </div>
             <div>
-              <Typography className={classes.value}>
-                64
-              </Typography>
+              <Typography className={classes.value}>64</Typography>
               <Button
                 type="submit"
                 fullWidth
