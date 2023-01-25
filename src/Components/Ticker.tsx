@@ -19,10 +19,6 @@ const useStyles = makeStyles(() => ({
     textAlign: "center",
     boxShadow: "0px 0px 6px rgb(0 0 0 / 14%)",
     borderRadius: "12px",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
     padding: "16px",
   },
   btn: {
@@ -48,11 +44,9 @@ const Ticker = () => {
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
 
-  const { data: stockData } = useGetStockQuery();
+  const currentCurrency = currency.split(", ");
 
-  useEffect(() => {
-    console.log(stockData);
-  }, [])
+  const { data: stockData } = useGetStockQuery(currentCurrency);
 
   const handleChange = (event: SelectChangeEvent) => {
     setCurrency(event.target.value as string);
@@ -78,9 +72,9 @@ const Ticker = () => {
               label="Currency"
               onChange={handleChange}
             >
-              <MenuItem value={0}>CHN/RUB</MenuItem>
-              <MenuItem value={1}>GBP/JPY</MenuItem>
-              <MenuItem value={2}>USD/RUB</MenuItem>
+              <MenuItem value={"GBP, USD"}>GBP/USD</MenuItem>
+              <MenuItem value={"EUR, USD"}>EUR/USD</MenuItem>
+              <MenuItem value={"RUB, USD"}>RUB/USD</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -96,7 +90,9 @@ const Ticker = () => {
           />
           <div className={classes.actions}>
             <div>
-              <Typography className={classes.value}>62</Typography>
+              <Typography className={classes.value}>
+                {!stockData ? "0" : stockData.rates.USD}
+              </Typography>
               <Button
                 type="submit"
                 fullWidth
@@ -108,7 +104,9 @@ const Ticker = () => {
               </Button>
             </div>
             <div>
-              <Typography className={classes.value}>64</Typography>
+              <Typography className={classes.value}>
+                {!stockData ? "0" : stockData.rates.USD}
+              </Typography>
               <Button
                 type="submit"
                 fullWidth
