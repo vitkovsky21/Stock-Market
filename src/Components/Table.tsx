@@ -11,7 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -41,6 +42,7 @@ const useStyles = makeStyles(() => ({
 
 const StockTable = () => {
   const classes = useStyles();
+  let clientMessages = useSelector((state: any) => state.message.clientMessage)
 
   return (
     <Paper className={classes.paper}>
@@ -72,7 +74,7 @@ const StockTable = () => {
               <TableCell>Buy</TableCell>
               <TableCell>1.22</TableCell>
               <TableCell>10 000.00</TableCell>
-              <TableCell>GBP/USD</TableCell>
+              <TableCell>{clientMessages[0].instrument}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

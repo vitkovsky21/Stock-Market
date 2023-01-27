@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import StoreReducer from "../Reducers/stock";
+import MessageSlice from "../Reducers/message"
 import { stockApi } from "../Services/stockApi";
 
 export function createStore() {
@@ -7,6 +8,7 @@ export function createStore() {
   return configureStore({
     reducer: {
       user: StoreReducer,
+      message: MessageSlice,
       [stockApi.reducerPath]: stockApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>

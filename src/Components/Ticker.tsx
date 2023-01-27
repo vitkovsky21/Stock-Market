@@ -11,7 +11,10 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ClientMessage } from "../Models/ClientMessages";
+import { addMessage } from "../Reducers/message";
 import { useGetStockQuery } from "../Services/stockApi";
 
 const useStyles = makeStyles(() => ({
@@ -40,6 +43,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Ticker = () => {
+  const webSocket: any = useRef(null);
+  const dispatch = useDispatch();
+
+  let clientMessage: ClientMessage | undefined;
+  let clientMessages = useSelector((state: any) => state.message.clientMessage);
   const classes = useStyles();
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
@@ -48,12 +56,41 @@ const Ticker = () => {
 
   const { data: stockData } = useGetStockQuery(currentCurrency);
 
+  useEffect(() => {
+    console.log("Opening Websocket");
+    webSocket.current = new WebSocket("ws://localhost:8000");
+    webSocket.current.onopen = (event: any) => {
+      console.log("Open: ", event);
+    };
+    webSocket.current.onclose = (event: any) => {
+      console.log("Close: ", event);
+    };
+    webSocket.current.onmessage = (event: any) => {
+      const res = JSON.parse(event.data);
+      dispatch(addMessage(res));
+
+      console.log(clientMessages)
+    };
+    return () => {
+      console.log("Closing.");
+      webSocket.current.close();
+    };
+  }, []);
+
   const handleChange = (event: SelectChangeEvent) => {
     setCurrency(event.target.value as string);
   };
 
-  const submit = () => {
-    console.log("submit");
+  const postMessage = (props: string) => {
+    clientMessage = {
+      instrument: currency,
+      side: props,
+      amount: sum,
+      price: stockData.rates.USD,
+    };
+
+    console.log(clientMessage);
+    webSocket.current.send(JSON.stringify(clientMessage));
   };
 
   return (
@@ -62,7 +99,7 @@ const Ticker = () => {
         <Typography variant="h5" style={{ marginBottom: "12px" }}>
           Ticker
         </Typography>
-        <form onSubmit={submit}>
+        <form>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Currency</InputLabel>
             <Select
@@ -94,11 +131,11 @@ const Ticker = () => {
                 {!stockData ? "0" : stockData.rates.USD}
               </Typography>
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.btn}
+                onClick={() => postMessage("Sell")}
               >
                 Sell
               </Button>
@@ -108,11 +145,11 @@ const Ticker = () => {
                 {!stockData ? "0" : stockData.rates.USD}
               </Typography>
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.btn}
+                onClick={() => postMessage("Buy")}
               >
                 Buy
               </Button>
@@ -120,6 +157,7 @@ const Ticker = () => {
           </div>
         </form>
       </Paper>
+
     </Container>
   );
 };
