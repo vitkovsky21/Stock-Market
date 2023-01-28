@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ClientMessage } from "../Models/ClientMessages";
 
 const initialState: any = {
-  clientMessage: []
+  clientMessage: [],
 };
 
 const MessageSlice = createSlice({
@@ -10,11 +9,16 @@ const MessageSlice = createSlice({
   initialState,
   reducers: {
     addMessage(state, action) {
-        state.clientMessage.push(action.payload)
-    }
+      state.clientMessage.push(action.payload);
+    },
+    updateMessage(state, action) {
+      state.clientMessage[
+        Math.floor(Math.random() * (state.clientMessage.length - 1 - 1) + 1)
+      ].status = action.payload;
+    },
   },
 });
 
-export const { addMessage } = MessageSlice.actions;
+export const { addMessage, updateMessage } = MessageSlice.actions;
 
 export default MessageSlice.reducer;

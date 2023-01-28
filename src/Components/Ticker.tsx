@@ -14,7 +14,7 @@ import { makeStyles } from "@mui/styles";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ClientMessage } from "../Models/ClientMessages";
-import { addMessage } from "../Reducers/message";
+import { addMessage, updateMessage } from "../Reducers/message";
 import { useGetStockQuery } from "../Services/stockApi";
 
 const useStyles = makeStyles(() => ({
@@ -46,31 +46,41 @@ const Ticker = () => {
   const webSocket: any = useRef(null);
   const dispatch = useDispatch();
 
-  let clientMessage: ClientMessage | undefined;
-  let clientMessages = useSelector((state: any) => state.message.clientMessage);
+  let clientMessage: any;
   const classes = useStyles();
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
+  const [counter, setCounter] = useState(1);
 
-  const currentCurrency = currency.split(", ");
+  const currentCurrency = currency.split("/");
 
   const { data: stockData } = useGetStockQuery(currentCurrency);
 
   useEffect(() => {
     console.log("Opening Websocket");
     webSocket.current = new WebSocket("ws://localhost:8000");
+
     webSocket.current.onopen = (event: any) => {
       console.log("Open: ", event);
     };
+
     webSocket.current.onclose = (event: any) => {
       console.log("Close: ", event);
     };
+
     webSocket.current.onmessage = (event: any) => {
-      const res = JSON.parse(event.data);
+      let res = JSON.parse(event.data);
       dispatch(addMessage(res));
 
-      console.log(clientMessages)
+      setTimeout(() => {
+        dispatch(
+          updateMessage(
+            Math.random() * (20 - 10) + 10 > 15 ? "Filled" : "Rejected"
+          )
+        );
+      }, Math.floor(Math.random() * (15000 - 5000) + 5000));
     };
+
     return () => {
       console.log("Closing.");
       webSocket.current.close();
@@ -83,13 +93,17 @@ const Ticker = () => {
 
   const postMessage = (props: string) => {
     clientMessage = {
+      id: counter,
+      creationTime: new Date().toDateString(),
+      changeTime: new Date().toDateString(),
       instrument: currency,
+      status: "Active",
       side: props,
       amount: sum,
       price: stockData.rates.USD,
     };
 
-    console.log(clientMessage);
+    setCounter((counter) => counter + 1);
     webSocket.current.send(JSON.stringify(clientMessage));
   };
 
@@ -109,9 +123,9 @@ const Ticker = () => {
               label="Currency"
               onChange={handleChange}
             >
-              <MenuItem value={"GBP, USD"}>GBP/USD</MenuItem>
-              <MenuItem value={"EUR, USD"}>EUR/USD</MenuItem>
-              <MenuItem value={"RUB, USD"}>RUB/USD</MenuItem>
+              <MenuItem value={"GBP/USD"}>GBP/USD</MenuItem>
+              <MenuItem value={"EUR/USD"}>EUR/USD</MenuItem>
+              <MenuItem value={"RUB/USD"}>RUB/USD</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -157,7 +171,6 @@ const Ticker = () => {
           </div>
         </form>
       </Paper>
-
     </Container>
   );
 };

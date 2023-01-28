@@ -42,7 +42,28 @@ const useStyles = makeStyles(() => ({
 
 const StockTable = () => {
   const classes = useStyles();
-  let clientMessages = useSelector((state: any) => state.message.clientMessage)
+  let clientMessages = useSelector((state: any) => state.message.clientMessage);
+
+  if (!clientMessages[0]) {
+    return <div>...loading</div>;
+  }
+
+  const messages = clientMessages.map((msg: any) => {
+    return (
+      <TableRow key={msg.id}>
+        <TableCell component="th" scope="row">
+          {msg.id}
+        </TableCell>
+        <TableCell>{msg.creationTime}</TableCell>
+        <TableCell>{msg.changeTime}</TableCell>
+        <TableCell>{msg.status}</TableCell>
+        <TableCell>{msg.side}</TableCell>
+        <TableCell>{msg.price}</TableCell>
+        <TableCell>{msg.amount}</TableCell>
+        <TableCell>{msg.instrument}</TableCell>
+      </TableRow>
+    );
+  });
 
   return (
     <Paper className={classes.paper}>
@@ -63,20 +84,7 @@ const StockTable = () => {
               <TableCell>Instrument</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell component="th" scope="row">
-                1
-              </TableCell>
-              <TableCell>{+new Date()}</TableCell>
-              <TableCell>{+new Date()}</TableCell>
-              <TableCell>Active</TableCell>
-              <TableCell>Buy</TableCell>
-              <TableCell>1.22</TableCell>
-              <TableCell>10 000.00</TableCell>
-              <TableCell>{clientMessages[0].instrument}</TableCell>
-            </TableRow>
-          </TableBody>
+          <TableBody>{messages}</TableBody>
         </Table>
       </TableContainer>
     </Paper>
