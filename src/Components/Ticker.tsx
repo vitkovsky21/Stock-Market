@@ -96,8 +96,8 @@ const Ticker = () => {
   const postMessage = (props: string) => {
     clientMessage = {
       id: counter,
-      creationTime: new Date().toDateString(),
-      changeTime: new Date().toDateString(),
+      creationTime: new Date().toLocaleString(),
+      changeTime: new Date().toLocaleString(),
       instrument: currency,
       status: "Active",
       side: props,

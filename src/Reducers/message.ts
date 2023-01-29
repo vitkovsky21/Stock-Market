@@ -12,9 +12,12 @@ const MessageSlice = createSlice({
       state.clientMessage.push(action.payload);
     },
     updateMessage(state, action) {
-      state.clientMessage[
-        Math.floor(Math.random() * (state.clientMessage.length - 1 - 1) + 1)
-      ].status = action.payload;
+      const msg =
+        state.clientMessage[
+          Math.floor(Math.random() * (state.clientMessage.length - 1 - 1) + 1)
+        ];
+      msg.status = action.payload;
+      msg.changeTime = new Date().toLocaleString();
     },
   },
 });

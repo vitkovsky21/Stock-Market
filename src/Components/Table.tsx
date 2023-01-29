@@ -87,22 +87,24 @@ const StockTable = () => {
     );
   }
 
-  const messages = clientMessages.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((msg: any) => {
-    return (
-      <TableRow key={msg.id}>
-        <TableCell component="th" scope="row">
-          {msg.id}
-        </TableCell>
-        <TableCell>{msg.creationTime}</TableCell>
-        <TableCell>{msg.changeTime}</TableCell>
-        <TableCell>{msg.status}</TableCell>
-        <TableCell>{msg.side}</TableCell>
-        <TableCell>{msg.price}</TableCell>
-        <TableCell>{msg.amount}</TableCell>
-        <TableCell>{msg.instrument}</TableCell>
-      </TableRow>
-    );
-  });
+  const messages = clientMessages
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((msg: any) => {
+      return (
+        <TableRow key={msg.id}>
+          <TableCell component="th" scope="row">
+            {msg.id}
+          </TableCell>
+          <TableCell>{msg.creationTime}</TableCell>
+          <TableCell>{msg.changeTime}</TableCell>
+          <TableCell>{msg.status}</TableCell>
+          <TableCell>{msg.side}</TableCell>
+          <TableCell>{msg.price}</TableCell>
+          <TableCell>{msg.amount}</TableCell>
+          <TableCell>{msg.instrument}</TableCell>
+        </TableRow>
+      );
+    });
 
   return (
     <Paper className={classes.paper}>
