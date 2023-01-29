@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Paper,
@@ -7,6 +7,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -42,6 +43,9 @@ const useStyles = makeStyles(() => ({
 const StockTable = () => {
   const classes = useStyles();
   let clientMessages = useSelector((state: any) => state.message.clientMessage);
+
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
 
   if (!clientMessages[0]) {
     return (
@@ -83,7 +87,7 @@ const StockTable = () => {
     );
   }
 
-  const messages = clientMessages.map((msg: any) => {
+  const messages = clientMessages.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((msg: any) => {
     return (
       <TableRow key={msg.id}>
         <TableCell component="th" scope="row">
@@ -119,7 +123,21 @@ const StockTable = () => {
               <TableCell>Instrument</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{messages}</TableBody>
+          <TableBody>
+            {messages}
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20]}
+                count={clientMessages.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(_, newPage) => setPage(newPage)}
+                onRowsPerPageChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setRowsPerPage(parseInt(e.target.value))
+                }
+              />
+            </TableRow>
+          </TableBody>
         </Table>
       </TableContainer>
     </Paper>
