@@ -1,8 +1,10 @@
 import {
   Button,
+  CircularProgress,
   Container,
   FormControl,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Paper,
   Select,
@@ -12,8 +14,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ClientMessage } from "../Models/ClientMessages";
+import { useDispatch } from "react-redux";
 import { addMessage, updateMessage } from "../Reducers/message";
 import { useGetStockQuery } from "../Services/stockApi";
 
@@ -48,6 +49,7 @@ const Ticker = () => {
 
   let clientMessage: any;
   const classes = useStyles();
+
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
   const [counter, setCounter] = useState(1);
@@ -142,7 +144,7 @@ const Ticker = () => {
           <div className={classes.actions}>
             <div>
               <Typography className={classes.value}>
-                {!stockData ? "0" : stockData.rates.USD}
+                {!stockData ? <LinearProgress color="inherit" /> : stockData.rates.USD}
               </Typography>
               <Button
                 fullWidth
@@ -156,7 +158,7 @@ const Ticker = () => {
             </div>
             <div>
               <Typography className={classes.value}>
-                {!stockData ? "0" : stockData.rates.USD}
+                {!stockData ? <LinearProgress color="inherit" /> : stockData.rates.USD}
               </Typography>
               <Button
                 fullWidth

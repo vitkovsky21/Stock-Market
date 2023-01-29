@@ -1,6 +1,6 @@
+import React from "react";
+
 import {
-  Box,
-  Button,
   Paper,
   Table,
   TableBody,
@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles(() => ({
@@ -19,7 +18,7 @@ const useStyles = makeStyles(() => ({
     textAlign: "center",
     boxShadow: "0px 0px 6px rgb(0 0 0 / 14%)",
     borderRadius: "12px",
-    transform: "translate(-15%, -28%)",
+    transform: "translate(-15%, 0%)",
     padding: "16px",
   },
   btn: {
@@ -45,7 +44,43 @@ const StockTable = () => {
   let clientMessages = useSelector((state: any) => state.message.clientMessage);
 
   if (!clientMessages[0]) {
-    return <div>...loading</div>;
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h5" style={{ marginBottom: "12px" }}>
+          Table
+        </Typography>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Id</TableCell>
+                <TableCell>Creation Time</TableCell>
+                <TableCell>Change Time</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Side</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Instrument</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  0
+                </TableCell>
+                <TableCell>Empty</TableCell>
+                <TableCell>Empty</TableCell>
+                <TableCell>Empty</TableCell>
+                <TableCell>Empty</TableCell>
+                <TableCell>Empty</TableCell>
+                <TableCell>Empty</TableCell>
+                <TableCell>Empty</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    );
   }
 
   const messages = clientMessages.map((msg: any) => {
