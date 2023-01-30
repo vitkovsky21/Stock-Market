@@ -1,6 +1,7 @@
+import React, { useEffect, useRef, useState } from "react";
+
 import {
   Button,
-  CircularProgress,
   Container,
   FormControl,
   InputLabel,
@@ -13,10 +14,10 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addMessage, updateMessage } from "../Reducers/message";
 import { useGetStockQuery } from "../Services/stockApi";
+import { usePostTableMsgMutation } from "../Services/tableApi";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -53,6 +54,7 @@ const Ticker = () => {
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
   const [counter, setCounter] = useState(1);
+  const [addPostMessage] = usePostTableMsgMutation();
 
   const currentCurrency = currency.split("/");
 
@@ -73,6 +75,7 @@ const Ticker = () => {
     webSocket.current.onmessage = (event: any) => {
       let res = JSON.parse(event.data);
       dispatch(addMessage(res));
+      addPostMessage(res)
 
       setTimeout(() => {
         dispatch(
@@ -102,7 +105,7 @@ const Ticker = () => {
       status: "Active",
       side: props,
       amount: sum,
-      price: stockData.rates.USD,
+      price: 1.2524,
     };
 
     setCounter((counter) => counter + 1);
@@ -144,7 +147,11 @@ const Ticker = () => {
           <div className={classes.actions}>
             <div>
               <Typography className={classes.value}>
-                {!stockData ? <LinearProgress color="inherit" /> : stockData.rates.USD}
+                {!stockData ? (
+                  <LinearProgress color="inherit" />
+                ) : (
+                  stockData.rates.USD
+                )}
               </Typography>
               <Button
                 fullWidth
@@ -158,7 +165,11 @@ const Ticker = () => {
             </div>
             <div>
               <Typography className={classes.value}>
-                {!stockData ? <LinearProgress color="inherit" /> : stockData.rates.USD}
+                {!stockData ? (
+                  <LinearProgress color="inherit" />
+                ) : (
+                  stockData.rates.USD
+                )}
               </Typography>
               <Button
                 fullWidth

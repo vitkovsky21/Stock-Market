@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import StoreReducer from "../Reducers/stock";
-import MessageSlice from "../Reducers/message"
+import MessageSlice from "../Reducers/message";
 import { stockApi } from "../Services/stockApi";
+import { tableApi } from "../Services/tableApi";
 
 export function createStore() {
   let preloadedState;
@@ -10,9 +11,10 @@ export function createStore() {
       user: StoreReducer,
       message: MessageSlice,
       [stockApi.reducerPath]: stockApi.reducer,
+      [tableApi.reducerPath]: stockApi.reducer,
     },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(stockApi.middleware),
+    middleware: (getDefaultMiddleware: any) =>
+      getDefaultMiddleware().concat(tableApi.middleware, stockApi.middleware),
     preloadedState,
   });
 }
