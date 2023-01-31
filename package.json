@@ -19,7 +19,8 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev:server": "npm run dev --prefix ./server",
+    "dev:client": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test"
   },
@@ -39,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
   }
 }

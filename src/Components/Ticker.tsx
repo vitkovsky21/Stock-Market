@@ -72,23 +72,25 @@ const Ticker = () => {
       console.log("Close: ", event);
     };
 
-    webSocket.current.onmessage = (event: any) => {
-      let res = JSON.parse(event.data);
-      dispatch(addMessage(res));
-      addPostMessage(res)
-
-      setTimeout(() => {
-        dispatch(
-          updateMessage(
-            Math.random() * (20 - 10) + 10 > 15 ? "Filled" : "Rejected"
-          )
-        );
-      }, Math.floor(Math.random() * (15000 - 5000) + 5000));
-    };
-
     return () => {
       console.log("Closing.");
       webSocket.current.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    webSocket.current.onmessage = (event: any) => {
+      let res = JSON.parse(event.data);
+      console.log(res);
+      dispatch(addMessage(res));
+      addPostMessage(res);
+
+      setTimeout(() => {
+        const randomStatus =
+          Math.random() * (20 - 10) + 10 > 15 ? "Filled" : "Rejected";
+
+        dispatch(updateMessage(randomStatus));
+      }, Math.floor(Math.random() * (15000 - 5000) + 5000));
     };
   }, []);
 
