@@ -54,6 +54,7 @@ const Ticker = () => {
   const [currency, setCurrency] = useState("");
   const [sum, setSum] = useState("");
   const [counter, setCounter] = useState(1);
+
   const [addPostMessage] = usePostTableMsgMutation();
 
   const currentCurrency = currency.split("/");
@@ -81,16 +82,17 @@ const Ticker = () => {
   useEffect(() => {
     webSocket.current.onmessage = (event: any) => {
       let res = JSON.parse(event.data);
-      console.log(res);
+      console.log(res)
+
       dispatch(addMessage(res));
       addPostMessage(res);
 
       setTimeout(() => {
         const randomStatus =
-          Math.random() * (20 - 10) + 10 > 15 ? "Filled" : "Rejected";
+          res.randomStatus ? "Filled" : "Rejected";
 
         dispatch(updateMessage(randomStatus));
-      }, Math.floor(Math.random() * (15000 - 5000) + 5000));
+      }, res.randomCounter);
     };
   }, []);
 
@@ -108,9 +110,12 @@ const Ticker = () => {
       side: props,
       amount: sum,
       price: 1.2524,
+      randomStatus: Math.random() * (20 - 10) + 10 > 15,
+      randomCounter: Math.floor(Math.random() * (15000 - 5000) + 5000)
     };
 
     setCounter((counter) => counter + 1);
+
     webSocket.current.send(JSON.stringify(clientMessage));
   };
 

@@ -3,19 +3,20 @@ import type { Request, Response } from "express";
 import { Stock } from "../../db";
 
 type Stock = {
-  id: number,
-  creationTime: string,
-  changeTime: string,
-  instrument: string,
-  status: string,
-  side: string,
-  amount: string,
-  price: string,
+  id: number;
+  creationTime: string;
+  changeTime: string;
+  instrument: string;
+  status: string;
+  side: string;
+  amount: string;
+  price: string;
+  randomStatus: number;
+  randomCounter: number;
 };
 
 export const create = (req: Request, res: Response) => {
-
-  console.log(req.body.amount)
+  console.log(req.body.amount);
   const stock: Stock = {
     id: req.body.id,
     creationTime: req.body.creationTime,
@@ -24,12 +25,14 @@ export const create = (req: Request, res: Response) => {
     status: req.body.status,
     side: req.body.side,
     amount: req.body.amount,
-    price: req.body.price
+    price: req.body.price,
+    randomStatus: req.body.randomStatus,
+    randomCounter: req.body.randomCounter,
   };
 
   Stock.create(stock)
     .then((data: any) => {
-      console.log(data)
+      console.log(data);
       res.send(data);
     })
     .catch((err: { message: any }) => {

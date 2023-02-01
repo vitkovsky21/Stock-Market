@@ -1,4 +1,4 @@
-import { INTEGER, ModelAttributes } from "sequelize";
+import { BOOLEAN, INTEGER, ModelAttributes } from "sequelize";
 import { DataType, Model } from "sequelize-typescript";
 
 export interface IStock {
@@ -10,6 +10,8 @@ export interface IStock {
   side: string;
   amount: number;
   price: number;
+  randomStatus: boolean;
+  randomCounter: number;
 }
 
 const { STRING } = DataType;
@@ -48,4 +50,12 @@ export const StockModel: ModelAttributes<Model, IStock> = {
     type: STRING,
     allowNull: false,
   },
+  randomStatus: {
+    type: BOOLEAN,
+    allowNull: false,
+  },
+  randomCounter: {
+    type: INTEGER,
+    allowNull: false,
+  }
 };
