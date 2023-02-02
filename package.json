@@ -16,9 +16,12 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-scripts": "^5.0.1",
+    "server": "file:server",
     "typescript": "^4.9.4"
   },
   "scripts": {
+    "install:server": "cd ./server && npm install --force",
+    "install:client": "npm install --force",
     "dev:server": "npm run dev --prefix ./server",
     "dev:client": "react-scripts start",
     "build": "react-scripts build",
