@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Paper,
@@ -13,6 +13,10 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useSelector } from "react-redux";
+import {
+  useGetTableMsgQuery,
+  useUpdateTableMsgMutation,
+} from "../Services/tableApi";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -47,6 +51,8 @@ const StockTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
 
+  const [addUpdateMessage] = useUpdateTableMsgMutation();
+
   if (!clientMessages[0]) {
     return (
       <Paper className={classes.paper}>
@@ -69,16 +75,16 @@ const StockTable = () => {
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell component="th" scope="row">
-                  0
-                </TableCell>
-                <TableCell>Empty</TableCell>
-                <TableCell>Empty</TableCell>
-                <TableCell>Empty</TableCell>
-                <TableCell>Empty</TableCell>
-                <TableCell>Empty</TableCell>
-                <TableCell>Empty</TableCell>
-                <TableCell>Empty</TableCell>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 20]}
+                  count={clientMessages.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={(_, newPage) => setPage(newPage)}
+                  onRowsPerPageChange={(
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => setRowsPerPage(parseInt(e.target.value))}
+                />
               </TableRow>
             </TableBody>
           </Table>
@@ -89,6 +95,7 @@ const StockTable = () => {
 
   const messages = clientMessages
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .sort((a: { id: number }, b: { id: number }) => (a.id > b.id ? 1 : -1))
     .map((msg: any) => {
       return (
         <TableRow key={msg.id}>
@@ -104,7 +111,7 @@ const StockTable = () => {
           <TableCell>{msg.instrument}</TableCell>
         </TableRow>
       );
-    });
+    })
 
   return (
     <Paper className={classes.paper}>

@@ -2,7 +2,7 @@ import { BOOLEAN, INTEGER, ModelAttributes } from "sequelize";
 import { DataType, Model } from "sequelize-typescript";
 
 export interface IStock {
-  id: number;
+  counter: number;
   creationTime: string;
   changeTime: string;
   instrument: string;
@@ -17,10 +17,9 @@ export interface IStock {
 const { STRING } = DataType;
 
 export const StockModel: ModelAttributes<Model, IStock> = {
-  id: {
+  counter: {
     type: INTEGER,
     allowNull: false,
-    primaryKey: true,
   },
   creationTime: {
     type: STRING,
@@ -57,5 +56,5 @@ export const StockModel: ModelAttributes<Model, IStock> = {
   randomCounter: {
     type: INTEGER,
     allowNull: false,
-  }
+  },
 };

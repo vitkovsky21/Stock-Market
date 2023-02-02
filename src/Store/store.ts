@@ -11,7 +11,7 @@ export function createStore() {
       user: StoreReducer,
       message: MessageSlice,
       [stockApi.reducerPath]: stockApi.reducer,
-      [tableApi.reducerPath]: stockApi.reducer,
+      [tableApi.reducerPath]: tableApi.reducer,
     },
     middleware: (getDefaultMiddleware: any) =>
       getDefaultMiddleware().concat(tableApi.middleware, stockApi.middleware),

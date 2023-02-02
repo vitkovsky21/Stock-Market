@@ -17,7 +17,11 @@ import { makeStyles } from "@mui/styles";
 import { useDispatch } from "react-redux";
 import { addMessage, updateMessage } from "../Reducers/message";
 import { useGetStockQuery } from "../Services/stockApi";
-import { usePostTableMsgMutation } from "../Services/tableApi";
+import {
+  useGetTableMsgQuery,
+  usePostTableMsgMutation,
+  useUpdateTableMsgMutation,
+} from "../Services/tableApi";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -49,6 +53,7 @@ const Ticker = () => {
   const dispatch = useDispatch();
 
   let clientMessage: any;
+
   const classes = useStyles();
 
   const [currency, setCurrency] = useState("");
@@ -56,10 +61,19 @@ const Ticker = () => {
   const [counter, setCounter] = useState(1);
 
   const [addPostMessage] = usePostTableMsgMutation();
+  const [addUpdateMessage] = useUpdateTableMsgMutation();
 
   const currentCurrency = currency.split("/");
 
   const { data: stockData } = useGetStockQuery(currentCurrency);
+
+  let { data: clientMsgs } = useGetTableMsgQuery();
+  const [clientMessages, setClientMessages] = useState<any>();
+
+  setTimeout(() => {
+    setClientMessages(clientMsgs);
+    dispatch(addMessage(clientMessages));
+  }, 200);
 
   useEffect(() => {
     console.log("Opening Websocket");
@@ -82,19 +96,43 @@ const Ticker = () => {
   useEffect(() => {
     webSocket.current.onmessage = (event: any) => {
       let res = JSON.parse(event.data);
-      console.log(res)
 
-      dispatch(addMessage(res));
-      addPostMessage(res);
+      addUpdateMessage(res);
 
       setTimeout(() => {
-        const randomStatus =
-          res.randomStatus ? "Filled" : "Rejected";
+        dispatch(addMessage(clientMessages));
+      }, 200);
 
-        dispatch(updateMessage(randomStatus));
+      setTimeout(() => {
+        const randomStatus = res.randomStatus ? "Filled" : "Rejected";
+
+        let msg =
+          clientMessages[Math.floor(Math.random() * clientMessages.length + 1)];
+
+        if (msg) {
+          let msgToPost = {
+            id: msg.id,
+            counter: msg.counter,
+            creationTime: msg.creationTime,
+            changeTime: new Date().toLocaleString(),
+            instrument: msg.instrument,
+            status: randomStatus,
+            side: msg.side,
+            amount: msg.amount,
+            price: msg.price,
+            randomStatus: msg.randomStatus,
+            randomCounter: msg.randomCounter,
+          };
+
+          addUpdateMessage(msgToPost);
+
+          setTimeout(() => {
+            dispatch(addMessage(clientMessages.sort()));
+          }, 200);
+        }
       }, res.randomCounter);
     };
-  }, []);
+  }, [clientMessages]);
 
   const handleChange = (event: SelectChangeEvent) => {
     setCurrency(event.target.value as string);
@@ -102,7 +140,7 @@ const Ticker = () => {
 
   const postMessage = (props: string) => {
     clientMessage = {
-      id: counter,
+      counter: counter,
       creationTime: new Date().toLocaleString(),
       changeTime: new Date().toLocaleString(),
       instrument: currency,
@@ -111,12 +149,14 @@ const Ticker = () => {
       amount: sum,
       price: 1.2524,
       randomStatus: Math.random() * (20 - 10) + 10 > 15,
-      randomCounter: Math.floor(Math.random() * (15000 - 5000) + 5000)
+      randomCounter: Math.floor(Math.random() * (15000 - 5000) + 5000),
     };
 
-    setCounter((counter) => counter + 1);
+    setCounter((counter) => counter++);
 
     webSocket.current.send(JSON.stringify(clientMessage));
+
+    addPostMessage(clientMessage);
   };
 
   return (

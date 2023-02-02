@@ -14,7 +14,7 @@ export const tableApi = createApi({
   tagTypes: ["TABLE"],
   endpoints: (builder) => ({
     getTableMsg: builder.query<any, void>({
-      query: () => "",
+      query: () => "/stock",
       providesTags: ["TABLE"],
     }),
     postTableMsg: builder.mutation({
@@ -23,8 +23,17 @@ export const tableApi = createApi({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["TABLE"],
     }),
+    updateTableMsg: builder.mutation({
+      query: (payload) => ({
+        url: `/stock/${payload.id}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["TABLE"],
+    })
   }),
 });
 
-export const { useGetTableMsgQuery, usePostTableMsgMutation } = tableApi;
+export const { useGetTableMsgQuery, usePostTableMsgMutation, useUpdateTableMsgMutation } = tableApi;

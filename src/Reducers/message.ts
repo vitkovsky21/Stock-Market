@@ -9,7 +9,11 @@ const MessageSlice = createSlice({
   initialState,
   reducers: {
     addMessage(state, action) {
-      state.clientMessage.push(action.payload);
+      console.log(action.payload);
+      if (action.payload) {
+        state.clientMessage = action.payload;
+        console.log("STATE: ", state.clientMessage);
+      }
     },
     updateMessage(state, action) {
       const msg =

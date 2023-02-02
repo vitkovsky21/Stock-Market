@@ -4,6 +4,7 @@ import { Stock } from "../../db";
 
 type Stock = {
   id: number;
+  counter: number;
   creationTime: string;
   changeTime: string;
   instrument: string;
@@ -19,6 +20,7 @@ export const create = (req: Request, res: Response) => {
   console.log(req.body.amount);
   const stock: Stock = {
     id: req.body.id,
+    counter: req.body.counter,
     creationTime: req.body.creationTime,
     changeTime: req.body.changeTime,
     instrument: req.body.instrument,
@@ -45,11 +47,36 @@ export const create = (req: Request, res: Response) => {
 export const findAll = (_: Request, res: Response) => {
   Stock.findAll()
     .then((data: any) => {
+      console.log("RESPONSE!! ", data);
       res.send(data);
     })
     .catch((err: { message: any }) => {
       res.status(500).send({
         message: err.message || "Some error occurred while getting all posts.",
+      });
+    });
+};
+
+export const update = (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  Stock.update(req.body, {
+    where: { id: id },
+  })
+    .then((num) => {
+      if (num) {
+        res.send({
+          message: "Updated successfully.",
+        });
+      } else {
+        res.send({
+          message: `Maybe Stock was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch(() => {
+      res.status(500).send({
+        message: "Error updating Tutorial with id=" + id,
       });
     });
 };
