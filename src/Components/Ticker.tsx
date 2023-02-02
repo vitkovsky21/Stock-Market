@@ -147,6 +147,7 @@ const Ticker = () => {
       status: "Active",
       side: props,
       amount: sum,
+      // price: stockData.rates.USD - так должно быть, но я исчерпал лимит запросов к API, пока делал проект :)
       price: 1.2524,
       randomStatus: Math.random() * (20 - 10) + 10 > 15,
       randomCounter: Math.floor(Math.random() * (15000 - 5000) + 5000),
