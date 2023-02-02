@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useDispatch } from "react-redux";
-import { addMessage, updateMessage } from "../Reducers/message";
+import { addMessage } from "../Reducers/message";
 import { useGetStockQuery } from "../Services/stockApi";
 import {
   useGetTableMsgQuery,
