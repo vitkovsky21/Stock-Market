@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   Paper,
@@ -13,10 +13,6 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useSelector } from "react-redux";
-import {
-  useGetTableMsgQuery,
-  useUpdateTableMsgMutation,
-} from "../Services/tableApi";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -50,8 +46,6 @@ const StockTable = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-
-  const [addUpdateMessage] = useUpdateTableMsgMutation();
 
   if (!clientMessages[0]) {
     return (
@@ -93,9 +87,10 @@ const StockTable = () => {
     );
   }
 
-  const messages = clientMessages
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+  let copyClientMessages = [...clientMessages];
+  const messages = copyClientMessages
     .sort((a: { id: number }, b: { id: number }) => (a.id > b.id ? 1 : -1))
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     .map((msg: any) => {
       return (
         <TableRow key={msg.id}>
@@ -111,7 +106,7 @@ const StockTable = () => {
           <TableCell>{msg.instrument}</TableCell>
         </TableRow>
       );
-    })
+    });
 
   return (
     <Paper className={classes.paper}>
